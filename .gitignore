@@ -1,0 +1,12 @@
+# production config file
+.env
+logs
+
+# IDE
+*.ipr
+*.iws
+*.iml
+.idea
+/.ideaDataSources
+
+
