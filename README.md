@@ -1,29 +1,43 @@
-## Initializing Environment
+# Airflow Astronomy
+Данный DAG служит для загрузки астрономический данных с [https://api.weatherapi.com](https://www.weatherapi.com/docs/#apis-astronomy) по дате и METAR-коду и вставки их таблицу:
+```sql
+CREATE TABLE IF NOT EXISTS astronomy
+(
+    metar             VARCHAR(4)  NOT NULL,
+    date              DATE        NOT NULL,
+    sunrise           TIME        NOT NULL,
+    sunset            TIME        NOT NULL,
+    moonrise          TIME        NOT NULL,
+    moonset           TIME        NOT NULL,
+    moon_phase        VARCHAR(30) NOT NULL,
+    moon_illumination INT         NOT NULL,
+    UNIQUE (metar, date)
+);
 
-Before starting Airflow for the first time, You need to prepare your  environment, i.e. create the necessary files, directories and initialize the database.
+```
+
+## Инициализация окружения
+
+Перед первым запуском Airflow требуется подготовить окружение: создать необходимые директории и файлы:
 
 ```shell
-mkdir ./dags ./logs ./plugins
+mkdir ./logs
 echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
 ```
 
-You need to run database migrations and create the first user account. To do it, run.
+Также необходимо проинициализироват базу данных: запустить миграции и создать акканут:
 
 ```shell
 docker-compose up airflow-init
 ```
 
-Now you can start all services:
+Для запуска всех служб:
 
 ```shell
-docker-compose up
+docker-compose up -d
 ```
           
 ## Web Apps
 
-`airflow-webserver` is available at http://localhost:8080
-
-The default account has the login `airflow` and the password `airflow`.
-                                 
-
-[The flower app](https://flower.readthedocs.io/en/latest/) (for monitoring the environment) is available at http://localhost:5555
+* Airflow Webserver: http://localhost:8080. Дефолтный логин и пароль - `airflow`.
+* Flower: http://localhost:5555

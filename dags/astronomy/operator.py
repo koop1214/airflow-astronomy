@@ -1,4 +1,5 @@
 from typing import Any
+from typing import Dict
 
 from airflow.models.baseoperator import BaseOperator
 
@@ -15,6 +16,6 @@ class WeatherApiOperator(BaseOperator):
         self.conn_id = conn_id
         self.metar_code = metar_code
 
-    def execute(self, context: Any):
+    def execute(self, context: Any) -> Dict[str, str]:
         api = WeatherApiHook(self.conn_id)
         return api.get_astronomy(context['execution_date'].date(), self.metar_code)
