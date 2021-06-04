@@ -26,23 +26,35 @@ def astronomy_etl():
         postgres_conn_id='postgres_default',
     )
 
-    get_astronomy = WeatherApiOperator(
-        task_id='get_astronomy',
-        metar_code='ULLI',
-        conn_id='weather_api_conn_id',
-        do_xcom_push=True,
-    )
+    tasks = []
 
-    insert_astronomy = PostgresOperator(
-        task_id='insert_astronomy',
-        postgres_conn_id='postgres_default',
-        sql='sql/insert_astronomy.sql',
-        params={
-            'metar_code': 'ULLI'
-        }
-    )
+    for metar_code in [
+        'ULLI',
+        'UUEE',
+        'UWKD',
+    ]:
+        get_astronomy_task = WeatherApiOperator(
+            task_id=f'get_astronomy_{metar_code.lower()}',
+            metar_code=metar_code,
+            conn_id='weather_api_conn_id',
+            do_xcom_push=True,
+        )
 
-    create_table >> get_astronomy >> insert_astronomy
+        insert_astronomy = PostgresOperator(
+            task_id=f'insert_astronomy_{metar_code.lower()}',
+            postgres_conn_id='postgres_default',
+            sql='sql/insert_astronomy.sql',
+            params={
+                'metar_code': metar_code,
+                'get_astronomy_task_id': f'get_astronomy_{metar_code.lower()}'
+            }
+        )
+
+        get_astronomy_task >> insert_astronomy
+
+        tasks.append(get_astronomy_task)
+
+    create_table.set_downstream(tasks)
 
 
 main_dag = astronomy_etl()

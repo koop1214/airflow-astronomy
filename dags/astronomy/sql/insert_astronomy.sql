@@ -1,4 +1,4 @@
-{% set row = ti.xcom_pull(task_ids="get_astronomy") %}
+{% set row = ti.xcom_pull(task_ids=params.get_astronomy_task_id) %}
 INSERT INTO
     astronomy (metar, date, sunrise, sunset, moonrise, moonset, moon_phase, moon_illumination)
 VALUES (
