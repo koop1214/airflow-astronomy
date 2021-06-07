@@ -9,7 +9,7 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from .operator import WeatherApiOperator
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'koop',
     'start_date': dt.datetime(2021, 6, 1),
 }
 

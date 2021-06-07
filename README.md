@@ -41,3 +41,8 @@ docker-compose up -d
 
 * Airflow Webserver: http://localhost:8080. Дефолтный логин и пароль - `airflow`.
 * Flower: http://localhost:5555
+
+## Connections
+Для корректной работы необходимо создать соединения:
+* postgres_default - типа postgres
+* weather_api_conn_id - типа http с API Key от https://www.weatherapi.com/ в качестве пароля
